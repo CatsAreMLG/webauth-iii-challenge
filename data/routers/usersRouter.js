@@ -65,7 +65,6 @@ router.post('/login', async (req, res) => {
     ) {
       return res.status(401).json({ error: 'You shall not pass!' })
     } else {
-      console.log('hi')
       try {
         const token = generateToken(user)
         req.session.user = user
