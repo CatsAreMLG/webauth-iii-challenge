@@ -58,14 +58,17 @@ router.post('/login', async (req, res) => {
   const { body } = req
   if (body && body.username && body.password) {
     const user = await Users.findUser(body)
-    if (!user || !bcrypt.compareSync(body.password, user.password)) {
-      if (req.session && !req.session.token) {
-        return res.status(401).json({ error: 'You shall not pass!' })
-      }
+    if (
+      !user ||
+      !bcrypt.compareSync(body.password, user.password) ||
+      (req.session && !req.session.user)
+    ) {
+      return res.status(401).json({ error: 'You shall not pass!' })
     } else {
+      console.log('hi')
       try {
         const token = generateToken(user)
-        req.session.token = token
+        req.session.user = user
         const users = await Users.getUsers()
         res.status(200).json({ token, users })
       } catch (error) {
