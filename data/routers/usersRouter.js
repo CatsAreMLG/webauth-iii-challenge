@@ -2,6 +2,8 @@ const express = require('express')
 const Users = require('../helpers/usersDb')
 const router = express.Router()
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const { jwtSecret } = require('../../config/secrets')
 
 router.get('/', async (req, res) => {
   if (req.session && !req.session.user) {
@@ -57,14 +59,15 @@ router.post('/login', async (req, res) => {
   if (body && body.username && body.password) {
     const user = await Users.findUser(body)
     if (!user || !bcrypt.compareSync(body.password, user.password)) {
-      if (req.session && !req.session.user) {
+      if (req.session && !req.session.token) {
         return res.status(401).json({ error: 'You shall not pass!' })
       }
     } else {
       try {
-        req.session.user = user
+        const token = generateToken(user)
+        req.session.token = token
         const users = await Users.getUsers()
-        res.status(200).json(users)
+        res.status(200).json({ token, users })
       } catch (error) {
         res.status(500).json({ error })
       }
@@ -83,5 +86,16 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ error })
   }
 })
+
+function generateToken(user) {
+  const payload = {
+    subject: user.id,
+    username: user.username
+  }
+  const options = {
+    expiresIn: '1d'
+  }
+  return jwt.sign(payload, jwtSecret, options)
+}
 
 module.exports = router
