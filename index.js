@@ -26,11 +26,22 @@ const sessionOptions = {
   })
 }
 
+var whitelist = ['http://localhost:3000/']
+var corsOptions = {
+  origin: function(origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+
 server.use(session(sessionOptions))
 server.use(helmet())
 server.use(express.json())
+server.use(cors(corsOptions))
 server.use('/api/users', UsersRouter)
-server.use(cors())
 
 server.get('/', (req, res) => res.send('<h2>Welcome to the API</h2>'))
 
