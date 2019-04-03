@@ -38,7 +38,7 @@ router.get('/:id', async (req, res) => {
 })
 router.post('/register', async (req, res) => {
   const { body } = req
-  if (body && body.username && body.password) {
+  if (body && body.username && body.password && body.department) {
     const hash = bcrypt.hashSync(body.password, 14)
     body.password = hash
     try {
@@ -48,7 +48,9 @@ router.post('/register', async (req, res) => {
       res.status(500).json({ error })
     }
   } else
-    res.status(500).json({ error: 'Please provide a username and password' })
+    res
+      .status(500)
+      .json({ error: 'Please provide a username and password and department' })
 })
 router.post('/login', async (req, res) => {
   const { body } = req
