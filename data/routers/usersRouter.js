@@ -1,11 +1,12 @@
 const express = require('express')
 const Users = require('../helpers/usersDb')
+const restricted = require('../auth/restricted-middleware.js')
 const router = express.Router()
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { jwtSecret } = require('../../config/secrets')
 
-router.get('/', async (req, res) => {
+router.get('/', restricted, async (req, res) => {
   if (req.session && !req.session.user) {
     return res.status(401).json({ error: 'You shall not pass!' })
   } else
@@ -24,7 +25,7 @@ router.get('/logout', (req, res) => {
     })
   else res.end()
 })
-router.get('/:id', async (req, res) => {
+router.get('/:id', restricted, async (req, res) => {
   const { id } = req.params
   if (req.session && !req.session.user) {
     return res.status(401).json({ error: 'You shall not pass!' })
