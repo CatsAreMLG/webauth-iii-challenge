@@ -4,6 +4,7 @@ const server = express()
 const session = require('express-session')
 const KnexSessionStore = require('connect-session-knex')(session)
 const UsersRouter = require('./data/routers/usersRouter')
+const cors = require('cors')
 
 const PORT = 9090
 const sessionOptions = {
@@ -29,6 +30,7 @@ server.use(session(sessionOptions))
 server.use(helmet())
 server.use(express.json())
 server.use('/api/users', UsersRouter)
+server.use(cors())
 
 server.get('/', (req, res) => res.send('<h2>Welcome to the API</h2>'))
 
