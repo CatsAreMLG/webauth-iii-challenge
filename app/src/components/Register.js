@@ -13,18 +13,25 @@ class Register extends React.Component {
   }
   submit = e => {
     e.preventDefault()
+    const { username, password, department } = this.state
     axios
       .post(`http://localhost:9090/api/users/register`, {
-        username: this.state.username,
-        password: this.state.password,
-        department: this.state.department
+        username,
+        password,
+        department
       })
-      .then(res => {
-        console.log(res.data)
+      .then(res1 => {
+        axios
+          .post(`http://localhost:9090/api/users/login`, {
+            username,
+            password
+          })
+          .then(res => {
+            this.props.setToken(res.data.token)
+          })
+          .catch(err => console.log(err))
       })
-      .catch(err => {
-        console.log(err)
-      })
+      .catch(err => console.log(err))
   }
   render() {
     return (
