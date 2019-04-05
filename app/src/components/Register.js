@@ -20,12 +20,18 @@ class Register extends React.Component {
         password,
         department
       })
-      .then(res => {
-        console.log(res.data)
+      .then(res1 => {
+        axios
+          .post(`http://localhost:9090/api/users/login`, {
+            username,
+            password
+          })
+          .then(res => {
+            this.props.setToken(res.data.token)
+          })
+          .catch(err => console.log(err))
       })
-      .catch(err => {
-        console.log(err)
-      })
+      .catch(err => console.log(err))
   }
   render() {
     return (

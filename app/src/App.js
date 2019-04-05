@@ -16,6 +16,7 @@ class App extends Component {
   setToken = token => {
     localStorage.setItem('jwt', token)
     this.setState({ token })
+    this.props.history.push('/users')
   }
   logout = _ => {
     localStorage.removeItem('jwt')
@@ -43,7 +44,10 @@ class App extends Component {
           path="/login"
           component={props => <Login {...props} setToken={this.setToken} />}
         />
-        <Route path="/register" component={Register} />
+        <Route
+          path="/register"
+          component={props => <Register {...props} setToken={this.setToken} />}
+        />
         <Route
           path="/users"
           component={props => <Users {...props} token={this.state.token} />}

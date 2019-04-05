@@ -20,11 +20,8 @@ class Login extends React.Component {
       .post(`http://localhost:9090/api/users/login`, { username, password })
       .then(res => {
         this.props.setToken(res.data.token)
-        this.props.history.push('/users')
       })
-      .catch(err => {
-        console.log(err)
-      })
+      .catch(err => console.log(err))
   }
   render() {
     return (
