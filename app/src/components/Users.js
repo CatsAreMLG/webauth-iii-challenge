@@ -1,6 +1,8 @@
 import React from 'react'
 import axios from 'axios'
 
+import requiresAuth from './requiresAuth'
+
 class Users extends React.Component {
   constructor(props) {
     super(props)
@@ -12,12 +14,8 @@ class Users extends React.Component {
     this.loadUsers()
   }
   loadUsers = _ => {
-    const headers = {
-      authorization: this.props.token
-    }
-    const endpoint = 'http://localhost:9090/api/users'
     axios
-      .get(endpoint, { headers })
+      .get('/')
       .then(res => {
         this.setState({ users: res.data })
       })
@@ -36,4 +34,4 @@ class Users extends React.Component {
   }
 }
 
-export default Users
+export default requiresAuth(Users)

@@ -11,7 +11,7 @@ class App extends Component {
     token: ''
   }
   componentDidMount() {
-    this.state.token === '' && this.props.history.push('/login')
+    // this.state.token === '' && this.props.history.push('/login')
   }
   setToken = token => {
     localStorage.setItem('jwt', token)
