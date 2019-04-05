@@ -13,11 +13,12 @@ class Register extends React.Component {
   }
   submit = e => {
     e.preventDefault()
+    const { username, password, department } = this.state
     axios
       .post(`http://localhost:9090/api/users/register`, {
-        username: this.state.username,
-        password: this.state.password,
-        department: this.state.department
+        username,
+        password,
+        department
       })
       .then(res => {
         console.log(res.data)

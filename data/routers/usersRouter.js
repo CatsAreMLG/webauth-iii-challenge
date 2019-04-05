@@ -7,15 +7,12 @@ const jwt = require('jsonwebtoken')
 const { jwtSecret } = require('../../config/secrets')
 
 router.get('/', restricted, async (req, res) => {
-  if (req.session && !req.session.user) {
-    return res.status(401).json({ error: 'You shall not pass!' })
-  } else
-    try {
-      const users = await Users.getUsers()
-      res.status(200).json(users)
-    } catch (error) {
-      res.status(500).json({ error })
-    }
+  try {
+    const users = await Users.getUsers()
+    res.status(200).json(users)
+  } catch (error) {
+    res.status(500).json({ error })
+  }
 })
 router.get('/logout', (req, res) => {
   if (req.session)
@@ -46,7 +43,8 @@ router.post('/register', async (req, res) => {
     body.password = hash
     try {
       const id = await Users.addUser(body)
-      res.status(201).json(id)
+      const user = await Users.getUser(id)
+      res.status(201).json({ id, username: user.username })
     } catch (error) {
       res.status(500).json({ error })
     }
@@ -59,18 +57,13 @@ router.post('/login', async (req, res) => {
   const { body } = req
   if (body && body.username && body.password) {
     const user = await Users.findUser(body)
-    if (
-      !user ||
-      !bcrypt.compareSync(body.password, user.password) ||
-      (req.session && !req.session.user)
-    ) {
+    if (!user || !bcrypt.compareSync(body.password, user.password)) {
       return res.status(401).json({ error: 'You shall not pass!' })
     } else {
       try {
         const token = generateToken(user)
         req.session.user = user
-        const users = await Users.getUsers()
-        res.status(200).json({ token, users })
+        res.status(200).json({ token })
       } catch (error) {
         res.status(500).json({ error })
       }

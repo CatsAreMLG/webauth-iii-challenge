@@ -26,15 +26,8 @@ const sessionOptions = {
   })
 }
 
-var whitelist = ['http://localhost:3000', 'http://localhost:9090']
 var corsOptions = {
-  origin: function(origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  }
+  origin: 'http://localhost:3000'
 }
 
 server.use(session(sessionOptions))
